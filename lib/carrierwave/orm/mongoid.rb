@@ -39,9 +39,11 @@ module CarrierWave
             value = value.duplicable? ? value.clone : value
           rescue TypeError, NoMethodError
           end
-          @modifications[column] = value
+          setup_modifications
 
-          super
+          super.tap do
+            @modifications[column] = [value, __send__(column)]
+          end
         end
 
         def #{column}_changed?
